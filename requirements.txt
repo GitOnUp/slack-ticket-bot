@@ -1,2 +1,4 @@
 termcolor~=2.3.0
-steamship==2.17.18
+slack-sdk~=3.21.0
+slack-bolt~=1.18.0
+git+https://github.com/steamship-core/python-client@slack-thread-support
