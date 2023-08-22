@@ -6,7 +6,8 @@ from pydantic import Field
 from steamship import Block, Task, DocTag, Steamship
 from steamship.agents.functional import FunctionsBasedAgent
 from steamship.agents.llms.openai import ChatOpenAI
-from steamship.agents.mixins.transports.slack import SlackTransport, SlackTransportConfig
+from steamship.agents.mixins.transports.slack import SlackTransport, SlackTransportConfig, SlackThreadingBehavior, \
+    SlackContextBehavior
 from steamship.agents.mixins.transports.steamship_widget import SteamshipWidgetTransport
 from steamship.agents.schema import Tool, AgentContext, Metadata
 from steamship.agents.service.agent_service import AgentService
@@ -99,7 +100,11 @@ class MyAssistant(AgentService):
         self.add_mixin(
             SteamshipWidgetTransport(client=self.client, agent_service=self),
         )
-        slack_transport = SlackTransportWithHistory(client=self.client, config=SlackTransportConfig(), agent_service=self)
+        config = SlackTransportConfig(
+            threading_behavior=SlackThreadingBehavior.ALWAYS_THREADED,
+            context_behavior=SlackContextBehavior.ENTIRE_CHANNEL
+        )
+        slack_transport = SlackTransportWithHistory(client=self.client, config=config, agent_service=self)
         self.add_mixin(slack_transport)
         token_provider.slack_transport = slack_transport
 
